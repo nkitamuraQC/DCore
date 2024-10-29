@@ -45,15 +45,15 @@ class QSCISolver(SolverBase):
     def run_qsci(self, int1e, int2e, omega_max, omega_min, exct, n_site, n_bath):
         return
     
-    def get_green(self, e, c, omega_max, omega_min, exct, n_site, n_bath):
+    def get_green(self, e, c, n_iw, omega_max, omega_min, exct, n_site, n_bath):
         return
 
     def solve(self, rot, mpirun_command, params_kw):
-        omega_max, omega_min, exct, n_site, n_bath = self.preprocess(rot, mpirun_command, params_kw)
+        n_iw, omega_max, omega_min, exct, n_site, n_bath = self.preprocess(rot, mpirun_command, params_kw)
         int1e = self.read_int1e()
         int2e = self.read_int2e()
         e, c = self.run_qsci(int1e, int2e, omega_max, omega_min, exct, n_site, n_bath)
-        gf = self.get_green(e, c, omega_max, omega_min, exct, n_site, n_bath)
+        gf = self.get_green(e, c, n_iw, omega_max, omega_min, exct, n_site, n_bath)
         self.postprocess(gf, int1e, n_site, n_bath)
         return
     
@@ -170,7 +170,7 @@ class QSCISolver(SolverBase):
 
             for u in interall:
                 print(u.i1, u.s1, u.i2, u.s2, u.i3, u.s3, u.i4, u.s4, u.U.real, u.U.imag, file=f)
-        return omega_max, omega_min, exct, n_site, n_bath
+        return self.n_iw, omega_max, omega_min, exct, n_site, n_bath
 
 
     def postprocess(self, one_body_g, transfer, n_site, n_bath):
